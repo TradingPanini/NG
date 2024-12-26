@@ -1,0 +1,39 @@
+from datetime import datetime
+import yfinance as yf
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Get the current system date
+end_date = datetime.today().strftime('%Y-%m-%d')
+
+# Fetch historical price data for UNG (start date is fixed, end date is dynamic)
+data = yf.download('UNG', start='2007-05-01', end=end_date)
+monthly_data = data['Close'].resample('ME').last()
+
+monthly_returns = monthly_data.pct_change()
+
+monthly_returns['Month_number'] = monthly_returns.index.month
+
+monthly_returns['Month_abbr'] = monthly_returns.index.strftime('%b')
+
+average_monthly_returns = monthly_returns.groupby('Month_number')['UNG'].mean()
+
+
+
+#plot data
+plt.figure(figsize=(10, 6))
+
+plt.bar(
+    average_monthly_returns.index,
+    average_monthly_returns.values,
+    color='skyblue',
+    edgecolor='black'
+)
+plt.title('Average Monthly Returns for UNG')
+plt.xlabel('Month')
+plt.ylabel('Average Return')
+plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+plt.grid(axis='y', linestyle='--', alpha=0.7)
+
+plt.tight_layout()
+plt.show()
