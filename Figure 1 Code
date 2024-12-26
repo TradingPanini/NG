@@ -2,11 +2,9 @@ import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Get the current system date
-end_date = datetime.today().strftime('%Y-%m-%d')
 
 # Fetch historical price data for UNG (start date is fixed, end date is dynamic)
-data = yf.download('UNG', start='2007-05-01', end=end_date)
+data = yf.download('UNG', start='2007-05-01', end='2025-12-30')
 monthly_data = data['Close'].resample('ME').last()
 
 monthly_returns = monthly_data.pct_change()
